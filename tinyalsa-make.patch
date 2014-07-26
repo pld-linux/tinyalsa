@@ -1,0 +1,36 @@
+--- tinyalsa-master/Makefile.orig	2014-06-03 21:56:15.000000000 +0200
++++ tinyalsa-master/Makefile	2014-07-26 13:01:17.790261446 +0200
+@@ -3,26 +3,27 @@
+ OBJECTS = mixer.o pcm.o
+ LIB = libtinyalsa.so
+ CROSS_COMPILE =
++CC = $(CROSS_COMPILE)gcc
+ 
+ all: $(LIB) tinyplay tinycap tinymix tinypcminfo
+ 
+ tinyplay: $(LIB) tinyplay.o
+-	$(CROSS_COMPILE)gcc tinyplay.o -L. -ltinyalsa -o tinyplay
++	$(CC) $(LDFLAGS) tinyplay.o -L. -ltinyalsa -o tinyplay
+ 
+ tinycap: $(LIB) tinycap.o
+-	$(CROSS_COMPILE)gcc tinycap.o -L. -ltinyalsa -o tinycap
++	$(CC) $(LDFLAGS) tinycap.o -L. -ltinyalsa -o tinycap
+ 
+ tinymix: $(LIB) tinymix.o
+-	$(CROSS_COMPILE)gcc tinymix.o -L. -ltinyalsa -o tinymix
++	$(CC) $(LDFLAGS) tinymix.o -L. -ltinyalsa -o tinymix
+ 
+ tinypcminfo: $(LIB) tinypcminfo.o
+-	$(CROSS_COMPILE)gcc tinypcminfo.o -L. -ltinyalsa -o tinypcminfo
++	$(CC) $(LDFLAGS) tinypcminfo.o -L. -ltinyalsa -o tinypcminfo
+ 
+ $(LIB): $(OBJECTS)
+-	$(CROSS_COMPILE)gcc -shared $(OBJECTS) -o $(LIB)
++	$(CC) $(LDFLAGS) -shared $(OBJECTS) -o $(LIB)
+ 
+ .c.o:
+-	$(CROSS_COMPILE)gcc $(CFLAGS) $< -I$(INC)
++	$(CC) $(CFLAGS) $(CPPFLAGS) $< -I$(INC)
+ 
+ clean:
+ 	-rm $(LIB) $(OBJECTS) tinyplay.o tinyplay tinycap.o tinycap \
