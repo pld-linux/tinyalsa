@@ -3,7 +3,7 @@ Summary(pl.UTF-8):	Mała biblioteka do współpracy z podsystemem ALSA w jądrze
 Name:		tinyalsa
 Version:	0
 %define	snap	20140604
-Release:	0.%{snap}.1
+Release:	0.%{snap}.2
 License:	BSD
 Group:		Libraries
 Source0:	https://github.com/tinyalsa/tinyalsa/archive/master/%{name}-%{snap}.tar.gz
