@@ -1,14 +1,14 @@
 Summary:	Small library to interface with ALSA in the Linux kernel
 Summary(pl.UTF-8):	Mała biblioteka do współpracy z podsystemem ALSA w jądrze Linuksa
 Name:		tinyalsa
-Version:	0
-%define	snap	20140604
-Release:	0.%{snap}.2
+Version:	1.0.2
+Release:	1
 License:	BSD
 Group:		Libraries
-Source0:	https://github.com/tinyalsa/tinyalsa/archive/master/%{name}-%{snap}.tar.gz
-# Source0-md5:	1d1f052450936f4fa78d73244e25f871
-Patch0:		%{name}-make.patch
+#Source0Download: https://github.com/tinyalsa/tinyalsa/releases
+Source0:	https://github.com/tinyalsa/tinyalsa/archive/v%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	174ca31afec04c91eab0a194df7dd0b4
+Patch0:		%{name}-soname.patch
 URL:		https://github.com/tinyalsa/tinyalsa
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -41,24 +41,48 @@ Header files for tinyalsa library.
 %description devel -l pl.UTF-8
 Pliki nagłówkowe biblioteki tinyalsa.
 
+%package static
+Summary:	Static tinyalsa library
+Summary(pl.UTF-8):	Statyczna biblioteka tinyalsa
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+
+%description static
+Static tinyalsa library.
+
+%description static -l pl.UTF-8
+Statyczna biblioteka tinyalsa.
+
+%package tools
+Summary:	Utilities for tinyalsa library
+Summary(pl.UTF-8):	Programy narzędziowe do biblioteki tinyalsa
+Group:		Applications/Sound
+Requires:	%{name} = %{version}-%{release}
+
+%description tools
+Utilities for tinyalsa library.
+
+%description tools -l pl.UTF-8
+Programy narzędziowe do biblioteki tinyalsa.
+
 %prep
-%setup -q -n tinyalsa-master
+%setup -q
 %patch0 -p1
 
 %build
 %{__make} \
 	CC="%{__cc}" \
-	CFLAGS="%{rpmcflags} -fPIC -Wall -c" \
+	CFLAGS="%{rpmcflags}" \
 	CPPFLAGS="%{rpmcppflags}" \
 	LDFLAGS="%{rpmldflags}"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_bindir},%{_libdir},%{_includedir}}
 
-install tinycap tinymix tinypcminfo tinyplay $RPM_BUILD_ROOT%{_bindir}
-install libtinyalsa.so $RPM_BUILD_ROOT%{_libdir}
-cp -pr include/tinyalsa $RPM_BUILD_ROOT%{_includedir}
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT \
+	PREFIX=%{_prefix} \
+	LIBDIR=%{_libdir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -68,13 +92,27 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc README
+%doc NOTICE README.md
+%attr(755,root,root) %{_libdir}/libtinyalsa.so.1
+
+%files devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libtinyalsa.so
+%{_includedir}/tinyalsa
+%{_mandir}/man3/tinyalsa-mixer.3*
+%{_mandir}/man3/tinyalsa-pcm.3*
+
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/libtinyalsa.a
+
+%files tools
+%defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/tinycap
 %attr(755,root,root) %{_bindir}/tinymix
 %attr(755,root,root) %{_bindir}/tinypcminfo
 %attr(755,root,root) %{_bindir}/tinyplay
-%attr(755,root,root) %{_libdir}/libtinyalsa.so
-
-%files devel
-%defattr(644,root,root,755)
-%{_includedir}/tinyalsa
+%{_mandir}/man1/tinycap.1*
+%{_mandir}/man1/tinymix.1*
+%{_mandir}/man1/tinypcminfo.1*
+%{_mandir}/man1/tinyplay.1*

@@ -1,0 +1,12 @@
+--- tinyalsa-1.0.2/src/Makefile.orig	2016-10-02 20:37:16.000000000 +0200
++++ tinyalsa-1.0.2/src/Makefile	2016-10-08 10:50:08.565287510 +0200
+@@ -30,7 +30,8 @@
+ 	$(AR) $(ARFLAGS) $@ $^
+ 
+ libtinyalsa.so.1: $(OBJECTS)
+-	$(LD) $(LDFLAGS) -shared $^ -o $@
++	$(LD) $(LDFLAGS) -shared $^ -o $@ -Wl,-soname=$@
++	ln -sf $@ libtinyalsa.so
+ 
+ .PHONY: clean
+ clean:
