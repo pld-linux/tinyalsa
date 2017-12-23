@@ -1,0 +1,10 @@
+--- tinyalsa-1.1.1/utils/Makefile.orig	2017-05-24 06:23:57.000000000 +0200
++++ tinyalsa-1.1.1/utils/Makefile	2017-12-23 12:34:34.937476795 +0100
+@@ -9,7 +9,6 @@
+ CFLAGS += -Wall -Wextra -Werror -Wfatal-errors
+ CFLAGS += -I ../include
+ CFLAGS += -L ../src
+-CFLAGS += -O2
+ 
+ VPATH = ../src:../include/tinyalsa
+ 

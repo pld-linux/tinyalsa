@@ -1,14 +1,14 @@
 Summary:	Small library to interface with ALSA in the Linux kernel
 Summary(pl.UTF-8):	Mała biblioteka do współpracy z podsystemem ALSA w jądrze Linuksa
 Name:		tinyalsa
-Version:	1.0.2
+Version:	1.1.1
 Release:	1
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/tinyalsa/tinyalsa/releases
-Source0:	https://github.com/tinyalsa/tinyalsa/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	174ca31afec04c91eab0a194df7dd0b4
-Patch0:		%{name}-soname.patch
+Source0:	https://github.com/tinyalsa/tinyalsa/archive/%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	ec5c1cc175fcb8c9d3d0adcececf10a9
+Patch0:		%{name}-opt.patch
 URL:		https://github.com/tinyalsa/tinyalsa
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -70,9 +70,9 @@ Programy narzędziowe do biblioteki tinyalsa.
 %patch0 -p1
 
 %build
+CFLAGS="%{rpmcflags}" \
 %{__make} \
 	CC="%{__cc}" \
-	CFLAGS="%{rpmcflags}" \
 	CPPFLAGS="%{rpmcppflags}" \
 	LDFLAGS="%{rpmldflags}"
 
@@ -90,17 +90,22 @@ rm -rf $RPM_BUILD_ROOT
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
 
+%triggerpostun -- tinyalsa < 1.1.0
+rm -f %{_libdir}/libtinyalsa.so.1
+/sbin/ldconfig
+
 %files
 %defattr(644,root,root,755)
 %doc NOTICE README.md
-%attr(755,root,root) %{_libdir}/libtinyalsa.so.1
+%attr(755,root,root) %{_libdir}/libtinyalsa.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libtinyalsa.so.1
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libtinyalsa.so
 %{_includedir}/tinyalsa
-%{_mandir}/man3/tinyalsa-mixer.3*
-%{_mandir}/man3/tinyalsa-pcm.3*
+%{_mandir}/man3/libtinyalsa-mixer.3*
+%{_mandir}/man3/libtinyalsa-pcm.3*
 
 %files static
 %defattr(644,root,root,755)
